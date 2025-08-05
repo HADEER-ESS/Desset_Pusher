@@ -1,15 +1,19 @@
 package com.hadeer.dessetpusher
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.hadeer.dessetpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
@@ -18,6 +22,8 @@ val COST_KEY = "price"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    private lateinit var toolbar : MaterialToolbar
+    private var receiptData  = mutableMapOf<String, Receipt>()
     var startItem  = 0
     var dessertCount = 0
     var dessertTotalCost = 0
@@ -27,9 +33,14 @@ class MainActivity : AppCompatActivity() {
         Timber.i("onCreate called")
         enableEdgeToEdge()
         setContentView(binding.root)
+        toolbar = binding.appToolbar
         if(savedInstanceState != null){
             dessertCount = savedInstanceState.getInt(AMOUNT_KEY)
             dessertTotalCost = savedInstanceState.getInt(COST_KEY)
+        }
+        binding.detailsSectionInclude.generateBtn.setOnClickListener {
+            Timber.i("Hash Map $receiptData")
+            PdfCreation().createPdf(it.context, dessertTotalCost, dessertCount, receiptData)
         }
         handleDisplayedNumber()
         handleDessertDisplay()
@@ -37,16 +48,43 @@ class MainActivity : AppCompatActivity() {
             handleDessertClicking()
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.share_receipt){
+            successStartActivity()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun successStartActivity() {
+        startActivity(createSharedIntent())
+    }
+
+    private fun createSharedIntent():Intent{
+        val shardIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/html"
+
+        }
+
+        return shardIntent
+    }
+
+
     @SuppressLint("SetTextI18n")
     private fun handleDisplayedNumber(){
         binding.detailsSectionInclude.dessertTotalCount.text = dessertCount.toString()
-        binding.detailsSectionInclude.priceTotalValue.text = "$ ${dessertTotalCost.toString()}"
+        binding.detailsSectionInclude.priceTotalValue.text = "$ $dessertTotalCost"
     }
 
 
     private fun handleDessertClicking() {
         dessertCount++
         dessertTotalCost += Data.DessertData[startItem].price
+        val item = Data.DessertData[startItem]
+        val name = item.name
+        val newCount = (receiptData[name]?.count ?: 0) + 1
+        receiptData[name] = Receipt(newCount, item.price)
         handleDisplayedNumber()
     }
 
@@ -61,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
 
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun handleDessertDisplay() {
@@ -92,29 +129,5 @@ class MainActivity : AppCompatActivity() {
     private fun showToast(){
         Toast.makeText(this, "Sorry there is no more dessert to display" , Toast.LENGTH_SHORT).show()
     }
-
-    override fun onStart() {
-        super.onStart()
-        Timber.i("onStart called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.i("onResume called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Timber.i("onPause called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Timber.i("onStop called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.i("onDestroy called")
-    }
 }
+

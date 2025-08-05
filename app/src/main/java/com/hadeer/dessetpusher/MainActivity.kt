@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.hadeer.dessetpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
+val AMOUNT_KEY = "amount"
+val COST_KEY = "price"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     var startItem  = 0
@@ -24,6 +27,10 @@ class MainActivity : AppCompatActivity() {
         Timber.i("onCreate called")
         enableEdgeToEdge()
         setContentView(binding.root)
+        if(savedInstanceState != null){
+            dessertCount = savedInstanceState.getInt(AMOUNT_KEY)
+            dessertTotalCost = savedInstanceState.getInt(COST_KEY)
+        }
         handleDisplayedNumber()
         handleDessertDisplay()
         binding.dessertImg.setOnClickListener {view->
@@ -41,6 +48,18 @@ class MainActivity : AppCompatActivity() {
         dessertCount++
         dessertTotalCost += Data.DessertData[startItem].price
         handleDisplayedNumber()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(AMOUNT_KEY , dessertCount)
+        outState.putInt(COST_KEY, dessertTotalCost)
+        Timber.i("on state instant state called")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
     }
 
 

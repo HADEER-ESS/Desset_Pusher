@@ -6,3 +6,8 @@ data class Dessert(
     val price : Int,
     val name : String
 )
+
+data class Receipt(
+    var count : Int,
+    val singleCost : Int,
+)

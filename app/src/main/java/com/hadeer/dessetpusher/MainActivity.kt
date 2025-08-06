@@ -53,6 +53,12 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.share_receipt -> {
                 successStartActivity()
+                //reset all data
+                receiptData.clear()
+                startItem = 0
+                dessertCount = 0
+                dessertTotalCost = 0
+                handleDisplayedNumber()
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -13,19 +13,19 @@ const val PDF_PAGE_WIDTH = 595
 const val PDF_PAGE_HEIGHT = 842
 
 class PdfCreation {
-
-    //Generate Pdf document instance
-    val doc = PdfDocument()
-    //Generate page info for the Page
-    val pageInfo = PdfDocument.PageInfo.Builder(
-        PDF_PAGE_WIDTH, PDF_PAGE_HEIGHT , 1
-    ).create()
-
-    val page = doc.startPage(pageInfo)
-
     lateinit var file :File
 
      fun createPdf(context : Context, sum :Int, total : Int , data : MutableMap<String, Receipt>){
+         //Generate Pdf document instance
+         val doc = PdfDocument()
+         //Generate page info for the Page
+         val pageInfo = PdfDocument.PageInfo.Builder(
+             PDF_PAGE_WIDTH, PDF_PAGE_HEIGHT , 1
+         ).create()
+
+         val page = doc.startPage(pageInfo)
+
+
         val canvas = page.canvas
         val paint = Paint()
         paint.textSize = 16f

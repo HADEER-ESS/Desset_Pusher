@@ -31,7 +31,7 @@ class PdfCreation {
         paint.textSize = 16f
          val startX = 80f
          var startY = 100f
-         val mainText = "Hadeer Gomal Market"
+         val mainText = "Market El Hadahed"
          val center = (canvas.width - paint.measureText(mainText)) / 2
          val lineSpacing = paint.fontSpacing  // vertical spacing between lines
          val itemX = startX

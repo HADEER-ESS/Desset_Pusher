@@ -36,13 +36,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         toolbar = binding.appToolbar
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         if(savedInstanceState != null){
             dessertCount = savedInstanceState.getInt(AMOUNT_KEY)
             dessertTotalCost = savedInstanceState.getInt(COST_KEY)
         }
-//        binding.detailsSectionInclude.generateBtn.setOnClickListener {
-//            pdfCreator.createPdf(it.context, dessertTotalCost, dessertCount, receiptData)
-//        }
+        binding.dessertImg.setImageResource(Data.DessertData[startItem].image)
         handleDisplayedNumber()
         handleDessertDisplay()
         binding.dessertImg.setOnClickListener {view->
@@ -54,6 +53,12 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.share_receipt -> {
                 successStartActivity()
+                //reset all data
+                receiptData.clear()
+                startItem = 0
+                dessertCount = 0
+                dessertTotalCost = 0
+                handleDisplayedNumber()
                 true
             }
             else -> super.onOptionsItemSelected(item)

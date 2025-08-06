@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 startItem = 0
                 dessertCount = 0
                 dessertTotalCost = 0
+                binding.dessertImg.setImageResource(Data.DessertData[startItem].image)
                 handleDisplayedNumber()
                 true
             }

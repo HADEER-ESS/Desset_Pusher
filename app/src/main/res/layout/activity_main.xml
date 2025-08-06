@@ -33,19 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
          />
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rv_horizontal_picker"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/details_section_include"-->
-<!--        tools:listitem="@layout/dessert_item"-->
-<!--        android:orientation="horizontal"-->
-<!--        tools:itemCount="1"-->
-<!--        />-->
     <include
         android:id="@+id/details_section_include"
         layout="@layout/white_view_container"

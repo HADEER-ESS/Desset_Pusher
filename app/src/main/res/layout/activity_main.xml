@@ -8,16 +8,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/app_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="36dp"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/tool_share"
         android:backgroundTint="@color/design_default_color_on_primary"
-        />
+        android:minHeight="?attr/actionBarSize"
+        android:paddingTop="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/tool_share" />
 
     <ImageButton
         android:id="@+id/dessert_img"
@@ -27,7 +29,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/dessert_image"
         android:scaleType="centerCrop"
-        android:src="@drawable/jellybean"
+        tools:src="@drawable/jellybean"
         app:layout_constraintBottom_toTopOf="@id/details_section_include"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

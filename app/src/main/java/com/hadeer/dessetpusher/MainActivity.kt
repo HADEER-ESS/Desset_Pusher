@@ -3,6 +3,7 @@ package com.hadeer.dessetpusher
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.widget.Toast
@@ -24,24 +25,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var toolbar : MaterialToolbar
     private var receiptData  = mutableMapOf<String, Receipt>()
+    val pdfCreator = PdfCreation()
     var startItem  = 0
     var dessertCount = 0
     var dessertTotalCost = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        Timber.i("onCreate called")
         enableEdgeToEdge()
         setContentView(binding.root)
         toolbar = binding.appToolbar
+        setSupportActionBar(toolbar)
         if(savedInstanceState != null){
             dessertCount = savedInstanceState.getInt(AMOUNT_KEY)
             dessertTotalCost = savedInstanceState.getInt(COST_KEY)
         }
-        binding.detailsSectionInclude.generateBtn.setOnClickListener {
-            Timber.i("Hash Map $receiptData")
-            PdfCreation().createPdf(it.context, dessertTotalCost, dessertCount, receiptData)
-        }
+//        binding.detailsSectionInclude.generateBtn.setOnClickListener {
+//            pdfCreator.createPdf(it.context, dessertTotalCost, dessertCount, receiptData)
+//        }
         handleDisplayedNumber()
         handleDessertDisplay()
         binding.dessertImg.setOnClickListener {view->
@@ -50,24 +51,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.share_receipt){
-            successStartActivity()
+        return when (item.itemId) {
+            R.id.share_receipt -> {
+                successStartActivity()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun successStartActivity() {
-        startActivity(createSharedIntent())
+        val intent = createSharedIntent()
+        if(intent != null){
+            startActivity(Intent.createChooser(intent , "Share PDF via...") )
+        }
     }
 
-    private fun createSharedIntent():Intent{
-        val shardIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/html"
-
+    private fun createSharedIntent():Intent?{
+        if(receiptData.isNotEmpty()){
+            pdfCreator.createPdf(this, dessertTotalCost, dessertCount, receiptData)
+            val file_uri = pdfCreator.getFileUrl(this)
+            if(file_uri != null){
+                val shardIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM , file_uri)
+                    type = "application/pdf"
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                return shardIntent
+            }
         }
-
-        return shardIntent
+        Toast.makeText(this, "please select items from shop" , Toast.LENGTH_SHORT).show()
+      return null
     }
 
 
@@ -97,8 +112,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.tool_share, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun handleDessertDisplay() {
